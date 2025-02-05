@@ -30,14 +30,17 @@ def find_password(rgb_values):
     print(password) 
     return password
 
-def find_key(rgb_values):
+def find_key(rgb_values,privkey):
     key=[]
     #gets the value from the key which is always in the last 15 pixels
-    key = rgb_values[-15:]
+    for x in range(15):
+        key .append(rgb_values[-x-privkey])
+        privkey = privkey+10000
     finalkey=[]
     #reverses the key
-    for x in range(15):
-        key[x]=list(reversed(key[x]))
+
+
+
     #moves from all the small sub lists to one large list
     for x in range(15):
         for j in range(3):
@@ -48,13 +51,14 @@ def find_key(rgb_values):
     key.pop(0)
     #removes the placeholders I used to get the key to 45 characters
     finalkey="".join(finalkey).replace("§","")
-    finalkey=finalkey[::-1]
+    finalkey=finalkey
     print(finalkey)
     return finalkey
 
 def find():
     RGB= get_rgb()
-    fernet = Fernet(find_key(RGB))
+    privkey = int(input("Enter your 4 digit passcode:  "))
+    fernet = Fernet(find_key(RGB,privkey))
     #uses the key to decypher the Token
     decMessage = fernet.decrypt(find_password(RGB))
     print("decrypted string: ", decMessage)

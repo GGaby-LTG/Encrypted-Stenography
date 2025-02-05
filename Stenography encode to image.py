@@ -36,7 +36,7 @@ def add_password(rgb_values,password):
         rgb_values[x+1]=grouped_list[x]
     return rgb_values
 
-def add_key(rgb_values,key):
+def add_key(rgb_values,key,privkey):
     key=str(key).replace("b'","")
     key=list(key)
     if len(key)%3 == 2:
@@ -50,7 +50,8 @@ def add_key(rgb_values,key):
                 full_key[x][y]=ord(full_key[x][y])
             full_key[x]=tuple(full_key[x])
     for x in range(len(full_key)):
-            rgb_values[-x-1]=full_key[x]
+            rgb_values[-x-int(privkey)]=full_key[x]
+            privkey = int(privkey)+10000
     return rgb_values
 
 def make_image():
@@ -63,9 +64,9 @@ def make_image():
     height = rhw[1]
     width  = rhw[2]
     rgb_values = add_password(rgb_values,password)
-    rgb_values = add_key(rgb_values,key)
+    privkey = input("Enter a four digit code , this code will be needed to retrieve your data:  ")
+    rgb_values = add_key(rgb_values,key,privkey)
     image = Image.new('RGB', (width, height))
-    print(rgb_values[-15:])
     # Put the RGB values into the image
     image.putdata(rgb_values)
     # Save the image as a PNG file
